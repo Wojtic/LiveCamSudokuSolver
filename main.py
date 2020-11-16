@@ -1,16 +1,17 @@
 import cv2
 import numpy as np
+import solver
 import random
-
+from skimage.segmentation import clear_border
 
 # todo: add oriantation chacking for the square
 # todo: check if both sides are +- equal
-
-threshEmpty = 0.03
+# todo: sort the countours by area and take the largest
 
 
 def extract_digit(cell):
     thresh = cv2.adaptiveThreshold(cell, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
+    thresh = clear_border(thresh)
     cnts, _ = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     if len(cnts) == 0:
@@ -39,7 +40,6 @@ def extract_digit(cell):
 #     imgThres = cv2.erode(imgDial, kernel, iterations=1)
 #     return imgThres
 
-
 cam = cv2.VideoCapture(0)
 cam.set(3, 1920)
 cam.set(4, 1080)
@@ -49,7 +49,8 @@ imgCropped = 0
 
 numbers = np.zeros((9, 9))
 
-frame_tres = 10
+frame_tres = 3
+threshEmpty = 0.03
 
 while True:
     _, img = cam.read()
