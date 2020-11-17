@@ -4,9 +4,9 @@ import solver
 import random
 from skimage.segmentation import clear_border
 
-# todo: add oriantation chacking for the square
+# todo: add orientation checking for the square
 # todo: check if both sides are +- equal
-# todo: sort the countours by area and take the largest
+# todo: sort the contours by area and take the largest
 
 
 def extract_digit(cell):
@@ -31,15 +31,6 @@ def extract_digit(cell):
     return digit
 
 
-# def pre_process(img):
-#     imgGrey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-#     imgBlur = cv2.GaussianBlur(imgGrey, (5, 5), 1)
-#     imgCanny = cv2.Canny(imgBlur, 200, 200)
-#     kernel = np.ones((5, 5))
-#     imgDial = cv2.dilate(imgCanny, kernel, iterations=2)
-#     imgThres = cv2.erode(imgDial, kernel, iterations=1)
-#     return imgThres
-
 cam = cv2.VideoCapture(0)
 cam.set(3, 1920)
 cam.set(4, 1080)
@@ -47,7 +38,7 @@ cam.set(4, 1080)
 imgOutput = 0
 imgCropped = 0
 
-numbers = np.zeros((9, 9))
+sudoku = np.zeros((9, 9))
 
 frame_tres = 3
 threshEmpty = 0.03
@@ -84,9 +75,9 @@ while True:
                         imgCropped = imgOutput[j*50+frame_tres:j*50+50-frame_tres, i*50+frame_tres:i*50+50-frame_tres]
                         dgt = extract_digit(imgCropped)
                         if dgt is None:
-                            numbers[j][i] = 0
+                            sudoku[j][i] = 0
                         else:
-                            numbers[j][i] = 1
+                            sudoku[j][i] = 1
 
                         if random.randint(1, 100) > 80:
                             cv2.imshow("test", imgCropped)
@@ -99,5 +90,6 @@ while True:
     # cv2.imshow("blank", blank)
     cv2.imshow("Countours", imgContour)
     if cv2.waitKey(1) & 0xFF == ord('q'):
-        print(numbers)
+        #solver.solve(sudoku)
+        print(sudoku)
         break
